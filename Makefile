@@ -23,9 +23,11 @@ $(NAME) : ./libft/libft.a $(SRC_OBJS)
 
 clean:
 	@rm -rf $(SRC_OBJS)
+	@make -C ./libft clean
 
 fclean: clean
 	@rm -rf $(NAME)
+	@make -C ./libft fclean
 
 re : fclean all
 
