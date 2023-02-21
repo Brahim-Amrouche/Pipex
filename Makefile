@@ -1,8 +1,8 @@
-SRC_FILES = ${wildcard ./src/*.c}
+SRC_FILES = ${wildcard ./src/*.c} ${wildcard ./src/**/*.c}
 
 NAME = pipex
 
-INCLUDES = ./libft/includes ./includes
+INCLUDES = -I./includes -I./libft/includes 
 
 FLAGS = -Wall -Wextra -Werror $(INCLUDES)
 
@@ -19,7 +19,7 @@ all : $(NAME)
 	@make -C ./libft
 
 $(NAME) : ./libft/libft.a $(SRC_OBJS)
-	$(CC) $(INCLUDES) @^ -o $@
+	$(CC) $(INCLUDES) $^ -o $@
 
 clean:
 	@rm -rf $(SRC_OBJS)
