@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:17:24 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/25 18:19:31 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/25 20:0 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <signal.h>
 
 
-void    pipe_process(int fd[2], char *argv[],char *envp[])
+void    pipe_process(int fd[2], char ***argv,char *envp[])
 {
     pid_t   childprocess;
     pid_t   grandchildprocess;
@@ -31,15 +31,14 @@ void    pipe_process(int fd[2], char *argv[],char *envp[])
             close(fd[0]);
             dup2(fd[1], STDOUT_FILENO);
             close(fd[1]);
-            if(execve("/bin/cat", argv, envp) == -1)
+            if(execve(argv[0][0], &(argv[0][1]), envp) == -1)
                 exit_pipex(EAGAIN, "couldn't execve grandchild", TRUE);
         }
         else {
-            char *xargv[] = {"/bin/ls", "-l", "-a", NULL};
             close(fd[1]);
             dup2(fd[0], STDIN_FILENO);
             close(fd[0]);
-            if(execve("/bin/ls", xargv, envp) == -1)
+            if(execve("ls", &(argv[1][1]), envp) == -1)
                 exit_pipex(EAGAIN, "couldn't execve child", TRUE);
         }
     }
@@ -52,11 +51,10 @@ void    pipe_process(int fd[2], char *argv[],char *envp[])
 }
 
 
-void    main_process(char *envp[])
+void    main_process(char ***argv, char *envp[])
 {
     int fd[2];
     pid_t	childprocess;
-    char    *argv[4] = {"cat", "./src/main.c",NULL};
 
     if (pipe(fd))
         exit_pipex(EPIPE, "couldn't pipe", TRUE);

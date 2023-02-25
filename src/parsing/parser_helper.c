@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/25 18:24:56 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/25 20:53:17 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static  t_boolean cmd_sep(char c)
     return FALSE;
 }
 
-char ***split_command_params(int argc, char *argv[])
+char ***split_command_params(int argc, char *argv[], char *envp[])
 {
     ssize_t i;
     char    ***pipe_args;
@@ -34,6 +34,8 @@ char ***split_command_params(int argc, char *argv[])
         *(pipe_args + i) = ft_split_multi_sep(*argv, cmd_sep);
         if (!(*pipe_args + i))
             exit_pipex(ENOMEM, "couldn't malloc arguments split", TRUE);
+        if (!envp)
+            continue;
     }
     *(pipe_args + i) = NULL;
     return pipe_args;
