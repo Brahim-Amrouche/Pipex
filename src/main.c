@@ -6,15 +6,17 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 11:08:02 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/21 15:09:49 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/25 18:28:16 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char *envp[])
 {
+    
+
     pipex_parser(argc, argv);
-    pipex_main_process();
+    main_process(envp);
     exit_pipex(0, NULL, FALSE);
 }

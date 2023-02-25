@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 18:14:34 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/01/21 19:54:49 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/22 19:13:02 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,28 @@ t_boolean	mem_manage_add(t_mem_manage_params params)
 }
 
 // moves a memory ref from a scope to another
-void	mem_manage_move(t_mem_manage_params params)
+void	mem_move(t_mem_manage_params params)
 {
 	t_list	*memory_scope;
 	t_list	*move_node;
 	t_list	*new_scope;
 
-	if (params.scope == 0 || params.move_scope == 0)
+	if (params.scope == 0 || params.move_scope == 0
+		|| !params.ref_pointer)
 		return ;
 	memory_scope = mem_find_scope(params.scope);
 	move_node = mem_find_ref_pointers(memory_scope, params.ref_pointer);
-	if (move_node == memory_scope)
+	if (!move_node || move_node == memory_scope)
 		return ;
 	mem_cut_node(memory_scope, move_node);
-	new_scope = mem_find_scope(params.move_scope)->content;
+	move_node->next = NULL;
+	new_scope = mem_find_scope(params.move_scope);
+	if (!new_scope)
+		new_scope = mem_add_new_scope(params.move_scope);
+	new_scope = new_scope->content;
 	ft_lstadd_back(&new_scope, move_node);
+	if (!((t_list *)memory_scope->content)->next)
+		ft_free(params.scope, FALSE);
 }
 
 void	ft_free(uint64_t scope, t_boolean purge_all)

@@ -8,10 +8,10 @@ PRINTF_SRCS = ./ft_printf/ft_printf.c \
 	./ft_printf/ft_converters_1.c \
 	./ft_printf/ft_flags_applier.c
 
-GNL_SRCS = ./gnl/get_next_line_utils_bonus.c \
-	./gnl/get_next_line_bonus.c
+GNL_SRCS = ./gnl/get_next_line.c ./gnl/get_next_line_utils.c
 
-GCG_SRCS = ${wildcard ./ft_garbage_collector/*.c}
+GCG_SRCS = ./ft_garbage_collector/ft_mem_managers_helpers_2.c ./ft_garbage_collector/ft_mem_managers_helpers_1.c \
+	./ft_garbage_collector/ft_garbage_collector.c      ./ft_garbage_collector/ft_mem_managers_helpers3.c
 
 INCLUDES = -I./includes
 

@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 16:06:10 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/01/21 20:20:17 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/22 21:08:29 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ t_list	*mem_add_new_scope(uint64_t scope)
 		ft_lstclear(&scope_first_node, free);
 		return (NULL);
 	}
-	ft_lstadd_back(memory_root(), scope_node);
+	ft_lstadd_front(memory_root(), scope_node);
 	return (scope_node);
 }
 
