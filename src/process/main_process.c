@@ -54,7 +54,6 @@ void    pipe_process(int fd[2], char ***argv,char *envp[])
 void    main_process(char ***argv, char *envp[])
 {
     int fd[2];
-    pid_t	childprocess;
 
     if (pipe(fd))
         exit_pipex(EPIPE, "couldn't pipe", TRUE);

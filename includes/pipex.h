@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:30:05 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/25 20:52:20 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/26 16:56:19 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ void	child_process(int fd[2]);
 void    main_process(char ***argv, char *envp[]);
 
 //utils
-char	**ft_split_multi_sep(char *s, t_boolean (*sep_checker)(char));
+//join_util.c
+char    *ft_strjoin_protected(char *s1, char *s2);
+// split_util.c
+char    **ft_split_multi_sep(char *s, t_boolean (*sep_checker)(char));
 
 //exit_pipex.c
 void	exit_pipex(int err_n, char *message, t_boolean is_error);

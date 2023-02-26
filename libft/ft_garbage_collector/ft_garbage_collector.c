@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 18:14:34 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/22 19:13:02 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/26 20:33:28 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_boolean	mem_manage_add(t_mem_manage_params params)
 	if (params.ref_pointer)
 	{
 		memory_scopes = mem_find_ref_pointers(memory_scopes,
-				params.ref_pointer);
+												params.ref_pointer);
 	}
 	else
 		params.node = create_node_with_content(params.node);
@@ -51,8 +51,7 @@ void	mem_move(t_mem_manage_params params)
 	t_list	*move_node;
 	t_list	*new_scope;
 
-	if (params.scope == 0 || params.move_scope == 0
-		|| !params.ref_pointer)
+	if (params.scope == 0 || params.move_scope == 0 || !params.ref_pointer)
 		return ;
 	memory_scope = mem_find_scope(params.scope);
 	move_node = mem_find_ref_pointers(memory_scope, params.ref_pointer);

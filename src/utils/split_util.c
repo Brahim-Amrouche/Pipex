@@ -6,11 +6,13 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 11:53:42 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/25 15:35:51 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/26 20:14:20 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+#define SPLIT_SCOPE 2
 
 static char	**ft_malloc_splits(char *s, t_boolean (*sep_checker)(char))
 {
@@ -31,7 +33,7 @@ static char	**ft_malloc_splits(char *s, t_boolean (*sep_checker)(char))
 		while (s[i] && !sep_checker(s[i]))
 			i++;
 	}
-	res = ft_malloc((count + 1) * sizeof(char *), (t_mem_manage_params){NULL, 2,
+	res = ft_malloc((count + 1) * sizeof(char *), (t_mem_manage_params){NULL, SPLIT_SCOPE,
 			NULL, 0});
 	if (res)
 		ft_bzero(res, sizeof(char *) * (count + 1));
@@ -52,7 +54,7 @@ static char	*ft_substr_protected(char const *s, unsigned int start, size_t len)
 	if (len >= s_len - start)
 		len = s_len - start;
 	res = (char *)ft_malloc((len + 1) * sizeof(char),
-			(t_mem_manage_params){NULL, 2, NULL, 0});
+			(t_mem_manage_params){NULL, SPLIT_SCOPE, NULL, 0});
 	if (!res)
 		return (NULL);
 	i = 0;

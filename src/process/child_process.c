@@ -6,14 +6,8 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:24:11 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/25 14:05:53 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/26 17:03:19 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-
-void    child_process(int fd[2])
-{
-
-}

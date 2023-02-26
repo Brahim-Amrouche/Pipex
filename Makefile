@@ -4,14 +4,14 @@ NAME = pipex
 
 INCLUDES = -I./includes -I./libft/includes 
 
-FLAGS = -Wall -Wextra -Werror $(INCLUDES)
+FLAGS = -Wall -Wextra -fsanitize=address $(INCLUDES)
 
 CC = cc
 
 SRC_OBJS = ${SRC_FILES:%.c=%.o}
 
 %.o : %.c
-	$(CC) $(INCLUDES) -c $^ -o $@
+	$(CC) $(FLAGS) -c $^ -o $@
 
 all : $(NAME)
 
@@ -19,7 +19,7 @@ all : $(NAME)
 	@make -C ./libft
 
 $(NAME) : ./libft/libft.a $(SRC_OBJS)
-	$(CC) $(INCLUDES) $^ -o $@
+	$(CC) $(FLAGS) $^ -o $@
 
 clean:
 	@rm -rf $(SRC_OBJS)
