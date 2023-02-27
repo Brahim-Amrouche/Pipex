@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   duplicat_util.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 11:08:02 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 20:35:28 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/02/27 21:08:41 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/02/27 21:24:20 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-
-t_boolean x(char c)
+char	*ft_strdup_protected(char *s1)
 {
-    if (c == ' ')
-        return TRUE;
-    return FALSE;
-}
+	size_t	s_len;
+	size_t	i;
+	char	*res;
 
-int main(int argc, char *argv[], char *envp[])
-{
-    
-    char ***params;
-
-    params = pipex_parser(argc, argv, envp);
-    // main_process(params, envp);
-    exit_pipex(0, NULL, FALSE);
+    if (!s1)
+        return NULL;
+	s_len = ft_strlen(s1);
+	res = ft_malloc((s_len + 1) * sizeof(char),
+			(t_mem_manage_params){NULL, 2, NULL, 0});
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < s_len)
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
 }

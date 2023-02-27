@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 16:06:10 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/26 20:02:15 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/27 20:18:50 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,23 @@ t_list	*mem_find_ref_pointers(t_list *memory_scope, void *ref_pointer)
 {
 	t_list	*mem_scope_inner_nodes;
 	t_list	*current_node;
+	int i; 
 
 	if (!memory_scope || !ref_pointer)
 		return (NULL);
 	mem_scope_inner_nodes = memory_scope->content;
 	mem_scope_inner_nodes = mem_scope_inner_nodes->next;
+	i = 1;
 	while (mem_scope_inner_nodes)
 	{
 		current_node = mem_scope_inner_nodes->content;
 		while (current_node && current_node->content != ref_pointer)
 			current_node = current_node->next;
 		if (!current_node)
+		{
 			mem_scope_inner_nodes = mem_scope_inner_nodes->next;
+			continue;
+		}
 		return (mem_scope_inner_nodes);
 	}
 	return (memory_scope);

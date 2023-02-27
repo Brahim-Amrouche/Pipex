@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/01 11:53:42 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/26 21:44:12 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/02/27 20:34:38 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/02/27 21:42:48 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static char	**ft_malloc_splits(char *s, t_boolean (*sep_checker)(char))
 	return (res);
 }
 
-static char	*split_substr(char const *s, unsigned int start, size_t len, void *container)
+static char	*split_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	s_len;
 	size_t	i;
@@ -54,7 +54,7 @@ static char	*split_substr(char const *s, unsigned int start, size_t len, void *c
 	if (len >= s_len - start)
 		len = s_len - start;
 	res = (char *)ft_malloc((len + 1) * sizeof(char),
-			(t_mem_manage_params){NULL, SPLIT_SCOPE, container, 0});
+			(t_mem_manage_params){NULL, SPLIT_SCOPE, NULL, 0});
 	if (!res)
 		return (NULL);
 	i = 0;
@@ -79,7 +79,7 @@ static size_t	ft_make_splits(char **splits, char const *s,
 		split_size++;
 	while (splits[++split_pos])
 		;
-	splits[split_pos] = split_substr(s, 0, split_size, splits);
+	splits[split_pos] = split_substr(s, 0, split_size);
 	if (!splits[split_pos])
 		return (0);
 	return (split_size);

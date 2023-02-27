@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:30:05 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/26 16:56:19 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/27 21:24:28 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 #include "errno.h"
 
 // Parsing
+// separator_functions
+t_boolean	path_sep(char c);
+t_boolean   cmd_sep(char c);
+
 // parser_helper.c
 char    ***split_command_params(int argc, char *argv[], char *envp[]);
 //parser.c
@@ -29,6 +33,8 @@ void	child_process(int fd[2]);
 void    main_process(char ***argv, char *envp[]);
 
 //utils
+//duplicat_util.c
+char	*ft_strdup_protected(char *s1);
 //join_util.c
 char    *ft_strjoin_protected(char *s1, char *s2);
 // split_util.c

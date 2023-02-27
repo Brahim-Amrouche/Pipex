@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   separtor_functions.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/21 11:08:02 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 20:35:28 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/02/27 20:41:50 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/02/27 20:44:08 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-
-t_boolean x(char c)
+t_boolean	path_sep(char c)
 {
-    if (c == ' ')
-        return TRUE;
-    return FALSE;
+	if (c == ':')
+		return TRUE;
+	return FALSE;
 }
 
-int main(int argc, char *argv[], char *envp[])
+t_boolean cmd_sep(char c)
 {
-    
-    char ***params;
-
-    params = pipex_parser(argc, argv, envp);
-    // main_process(params, envp);
-    exit_pipex(0, NULL, FALSE);
+	if (c == ' ' || c == '\t')
+		return TRUE;
+	return FALSE;
 }
