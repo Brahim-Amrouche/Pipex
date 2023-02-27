@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 21:53:29 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/27 22:22:21 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_boolean	cmd_is_exect(char **cmd, char **paths)
 	{
 		joined_path = ft_strjoin_protected(*paths, *cmd);
 		if (!joined_path)
-			exit_pipex(ENOMEM, "could't fix binary paths", TRUE);
+			exit_pipex(ENOMEM, "could't find binary paths", TRUE);
 		if (!access(joined_path, X_OK))
 		{
 			ft_free_node(2, *cmd);
@@ -32,7 +32,6 @@ t_boolean	cmd_is_exect(char **cmd, char **paths)
 		ft_free_node(2, joined_path);
 		paths++;
 	}
-	ft_print_memory();
 	return FALSE;
 } 
 
@@ -48,6 +47,8 @@ static void	add_ending_slash(char *paths[])
 		{
 			temp = *paths;
 			*paths = ft_strjoin_protected(*paths, "/");
+			if (!*paths)
+				exit_pipex(ENOMEM, "couldn't add slash's to path", TRUE);
 			ft_free_node(2, temp);
 		}
 		paths++;
@@ -60,10 +61,8 @@ static  char    **parse_path(char *envp[])
 	char	*res;
 	char	**paths;
 	
-	if(!envp)
-		return NULL;
 	res = NULL;
-	while (*envp)
+	while (envp && *envp)
 	{
 		if (ft_strncmp(*envp, "PATH", 4) == 0)
 		{
@@ -73,8 +72,9 @@ static  char    **parse_path(char *envp[])
 		envp++;
 	}
 	if (!res)
-		return (ft_split_multi_sep("", path_sep));
-	paths = ft_split_multi_sep(res, path_sep);
+		paths = ft_split_multi_sep("", path_sep);
+	else
+		paths = ft_split_multi_sep(res, path_sep);
 	if (!paths)
 		exit_pipex(ENOMEM, "couldn't malloc path routes", TRUE);
 	add_ending_slash(paths);
@@ -106,7 +106,6 @@ char ***split_command_params(int argc, char *argv[], char *envp[])
 		else
 			exit_pipex(EINVAL, "invalid commands", TRUE);
 	}
-	ft_print_memory();
 	*(pipe_args + i) = NULL;
 	return pipe_args;
 }

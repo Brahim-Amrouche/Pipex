@@ -6,19 +6,11 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 11:08:02 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 20:35:28 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/27 22:04:10 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-
-t_boolean x(char c)
-{
-    if (c == ' ')
-        return TRUE;
-    return FALSE;
-}
 
 int main(int argc, char *argv[], char *envp[])
 {
