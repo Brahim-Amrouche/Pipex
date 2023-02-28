@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 22:22:21 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/28 14:37:01 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,6 @@ char ***split_command_params(int argc, char *argv[], char *envp[])
 			exit_pipex(EINVAL, "invalid commands", TRUE);
 	}
 	*(pipe_args + i) = NULL;
+	mem_scope_merge(2, 1);
 	return pipe_args;
 }

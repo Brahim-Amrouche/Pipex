@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:30:05 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 21:24:28 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/28 22:37:04 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,34 @@
 #include "ft_garbage_collector.h"
 #include "errno.h"
 
+#define HEREDOC_PATH "/tmp/heredoc.tmp"
+
+typedef struct s_pipex
+{
+    int     *com_pipe;
+    int     *pass_pipe;
+    size_t  cmds_count;
+    char    ***cmds;
+    char    **envp;
+    int     in_file;
+    int     out_file;
+    /* data */
+} t_pipex;
+
 // Parsing
 // separator_functions
 t_boolean	path_sep(char c);
 t_boolean   cmd_sep(char c);
 
+
 // parser_helper.c
 char    ***split_command_params(int argc, char *argv[], char *envp[]);
 //parser.c
-char    ***pipex_parser(int argc, char *argv[], char *envp[]);
+void    pipex_parser(t_pipex *pipex, int argc, char *argv[], char *envp[]);
 
 //process
-//child_process.c
-void	child_process(int fd[2]);
 // main_process.c
-void    main_process(char ***argv, char *envp[]);
+void    main_process(t_pipex *pipex);
 
 //utils
 //duplicat_util.c

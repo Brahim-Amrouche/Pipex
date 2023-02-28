@@ -6,11 +6,11 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 15:53:38 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/23 12:40:05 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/02/28 21:03:34 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_garbage_collector.h"
+#include "../includes/ft_garbage_collector.h"
 
 static long	find_new_line(char *str)
 {
@@ -84,8 +84,11 @@ static char	*gnl_helper(int fd, char **res)
 char	*get_next_line(int fd)
 {
 	static char	*keeper[10241];
+	char		*res;
 
 	if (fd < 0 || fd > 10240 || BUFFER_SIZE <= 0)
 		return (NULL);
-	return (gnl_helper(fd, &(keeper[fd])));
+	res = gnl_helper(fd, &(keeper[fd]));
+	mem_move((t_mem_manage_params){NULL, GNL_SCOPE, res, 1});
+	return (res);
 }

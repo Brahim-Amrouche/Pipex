@@ -13,49 +13,77 @@
 #include "pipex.h"
 #include <signal.h>
 
-
-void    pipe_process(int fd[2], char ***argv,char *envp[])
+static void close_pipe(int *fd)
 {
-    pid_t   childprocess;
-    pid_t   grandchildprocess;
-    childprocess = fork();
-	if (childprocess == -1)
-        exit_pipex(EAGAIN, "couldn't fork child", TRUE);
-    if (childprocess == 0)
-    {
-        grandchildprocess = fork();
-        if (grandchildprocess == -1)
-            exit_pipex(EAGAIN, "couldn't fork grandchild", TRUE);
-        if (grandchildprocess == 0)
-        {
-            close(fd[0]);
-            dup2(fd[1], STDOUT_FILENO);
-            close(fd[1]);
-            if(execve(argv[0][0], &(argv[0][1]), envp) == -1)
-                exit_pipex(EAGAIN, "couldn't execve grandchild", TRUE);
-        }
-        else {
-            close(fd[1]);
-            dup2(fd[0], STDIN_FILENO);
-            close(fd[0]);
-            if(execve("ls", &(argv[1][1]), envp) == -1)
-                exit_pipex(EAGAIN, "couldn't execve child", TRUE);
-        }
-    }
-    else
-    {
-        close(fd[1]);
-        close(fd[0]);
-        wait(NULL);
-    }
+	close(fd[0]);
+    close(fd[1]);
+}
+
+static void	child_process(t_pipex *pipex, size_t cmd)
+{
+	close(pipex->com_pipe[1]);
+    close(pipex->pass_pipe[0]);
+    if (cmd == 0)
+	{
+        dup2(pipex->in_file, STDIN_FILENO);
+		close(pipex->in_file);
+	}
+	else
+        dup2(pipex->com_pipe[0], STDIN_FILENO);
+    close(pipex->com_pipe[0]);
+    if (cmd == pipex->cmds_count - 1)
+	{
+		dup2(pipex->out_file, STDOUT_FILENO);
+		close(pipex->out_file);
+	}
+	else
+        dup2(pipex->pass_pipe[1], STDOUT_FILENO);
+    close(pipex->pass_pipe[1]);
+    if(execve((pipex->cmds)[cmd][0], (pipex->cmds)[cmd], pipex->envp) == -1)
+        exit_pipex(EAGAIN, "couldn't execve childprocess", TRUE);
 }
 
 
-void    main_process(char ***argv, char *envp[])
+static void    execute_cmd(t_pipex *pipex, size_t cmd)
 {
-    int fd[2];
+    pid_t childprocess;
 
-    if (pipe(fd))
+    childprocess = fork();    
+    if (childprocess == -1)
+        exit_pipex(EAGAIN, "couldn't fork child process", TRUE);
+    if (childprocess == 0)
+		child_process(pipex, cmd);
+    else
+    {
+        close_pipe(pipex->com_pipe);
+        if(cmd == pipex->cmds_count - 1)
+            close_pipe(pipex->pass_pipe);
+    }
+    waitpid(childprocess, NULL, 0);
+}
+
+
+void    main_process(t_pipex *pipex)
+{
+    size_t	i;
+    int		fd_1[2];
+	int		fd_2[2]; 
+
+    if (pipe(fd_1) || pipe(fd_2))
         exit_pipex(EPIPE, "couldn't pipe", TRUE);
-    pipe_process(fd, argv, envp);
+	pipex->com_pipe = fd_1;
+	pipex->pass_pipe = fd_2;
+    i = 0;
+    while (i < pipex->cmds_count)
+    {
+        execute_cmd(pipex, i);
+		if (i < pipex->cmds_count - 1)
+		{
+			pipex->com_pipe = pipex->pass_pipe;
+        	if (pipe(fd_1))
+            	exit_pipex(EPIPE, "couldn't pipe", TRUE);
+			pipex->pass_pipe = fd_1;
+		}
+		i++;
+    }
 }
