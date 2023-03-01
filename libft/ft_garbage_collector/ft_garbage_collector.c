@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/17 18:14:34 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/27 20:21:46 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/01 19:55:51 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_boolean	mem_manage_add(t_mem_manage_params params)
 	if (params.ref_pointer)
 	{
 		memory_scopes = mem_find_ref_pointers(memory_scopes,
-												params.ref_pointer);
+				params.ref_pointer);
 	}
 	else
 		params.node = create_node_with_content(params.node);

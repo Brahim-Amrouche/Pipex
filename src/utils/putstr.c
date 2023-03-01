@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   separtor_functions.c                               :+:      :+:    :+:   */
+/*   putstr.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/27 20:41:50 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 19:52:06 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/03/01 18:50:32 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/03/01 19:53:11 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-t_boolean	path_sep(char c)
+void	protected_putchar_fd(int fd, char c)
 {
-	if (c == ':')
-		return (TRUE);
-	return (FALSE);
+	if (write(fd, &c, 1) == -1)
+		exit_pipex(EIO, "couldn't write to fd", TRUE);
 }
 
-t_boolean	cmd_sep(char c)
+void	protected_putstr_fd(int fd, char *str)
 {
-	if (c == ' ' || c == '\t')
-		return (TRUE);
-	return (FALSE);
+	while (*str)
+	{
+		protected_putchar_fd(fd, *str);
+		str++;
+	}
 }

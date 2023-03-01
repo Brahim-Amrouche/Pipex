@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 16:33:51 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/26 19:58:17 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/01 19:52:51 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,3 @@ char	*ft_strjoin_protected(char *s1, char *s2)
 	ft_strlcat(res, s2, total_len);
 	return (res);
 }
-

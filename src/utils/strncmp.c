@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   separtor_functions.c                               :+:      :+:    :+:   */
+/*   strncmp.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/27 20:41:50 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 19:52:06 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/03/01 18:33:53 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/03/01 19:39:15 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-t_boolean	path_sep(char c)
+int	protected_strncmp(char *s1, char *s2, size_t n)
 {
-	if (c == ':')
-		return (TRUE);
-	return (FALSE);
-}
+	size_t	i;
 
-t_boolean	cmd_sep(char c)
-{
-	if (c == ' ' || c == '\t')
-		return (TRUE);
-	return (FALSE);
+	if (!s1 && !s2)
+		return (0);
+	if ((!s1 && s2) || (s1 && !s2))
+		return (-1);
+	i = 0;
+	while ((*(s1 + i) || *(s2 + i)) && i < n)
+	{
+		if (((unsigned char)*(s1 + i)) != ((unsigned char)*(s2 + i)))
+			return (((unsigned char)*(s1 + i)) - ((unsigned char)*(s2 + i)));
+		i++;
+	}
+	return (0);
 }

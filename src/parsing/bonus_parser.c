@@ -6,58 +6,68 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 21:05:33 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/28 22:50:32 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/01 19:47:45 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-
-void    read_here_doc(t_pipex *pipex, char *argv[])
+static void	read_here_doc(t_pipex *pipex, char *argv[])
 {
-    char	*res;
-    size_t	limiter_len; 
+	char	*res;
+	size_t	limiter_len;
 
-    if (access(HEREDOC_PATH, F_OK) == 0)
-        if (unlink(argv[4]) == -1)
-            exit_pipex(EAGAIN, "couldn't unlink heredoc file", TRUE);
-    pipex->in_file = open(HEREDOC_PATH, O_CREAT | O_WRONLY, 0666);
+	if (access(HEREDOC_PATH, F_OK) == 0)
+		if (unlink(HEREDOC_PATH) == -1)
+			exit_pipex(EAGAIN, "couldn't unlink heredoc file", TRUE);
+	pipex->in_file = open(HEREDOC_PATH, O_CREAT | O_WRONLY, 0666);
 	if (pipex->in_file == -1)
 		exit_pipex(EAGAIN, "couldn't create heredoc", TRUE);
-    res = get_next_line(STDIN_FILENO);
+	res = get_next_line(STDIN_FILENO);
 	limiter_len = ft_strlen(argv[2]);
-	// find a way for empty "" LIMITER
-    while ((!limiter_len && res) || (limiter_len && ft_strncmp(res, argv[2], limiter_len)))
-    {
-        ft_putstr_fd(res, pipex->in_file);
-        res = get_next_line(STDIN_FILENO);
-    }
-    close(pipex->in_file);
+	while ((!limiter_len && res && res[0] != '\n') || (limiter_len
+			&& protected_strncmp(res, argv[2], limiter_len)))
+	{
+		ft_putstr_fd(res, pipex->in_file);
+		res = get_next_line(STDIN_FILENO);
+	}
+	close(pipex->in_file);
 	pipex->in_file = open(HEREDOC_PATH, O_RDONLY);
 	if (pipex->in_file == -1)
-		exit_pipex(EAGAIN, "couldn't create heredoc", TRUE);
+		exit_pipex(EAGAIN, "couldn't open heredoc for read", TRUE);
+	pipex->with_heredoc = TRUE;
 }
 
-void	read_file(t_pipex *pipex, char *argv[])
+static void	read_file(t_pipex *pipex, char *argv[])
 {
 	pipex->in_file = open(argv[1], O_RDONLY);
-    if (pipex->in_file == -1)
-        exit_pipex(EAGAIN, "couldn't open the read file", TRUE);
+	if (pipex->in_file == -1)
+		exit_pipex(EAGAIN, "couldn't open the read file", TRUE);
 }
 
-void    pipex_bonus_parser(t_pipex *pipex, int argc, char *argv[], char *envp[])
+void	pipex_bonus_parser(t_pipex *pipex, int argc, char *argv[], char *envp[])
 {
-    if(argc < 4)
-        exit_pipex(EINVAL, "not enough arguments", TRUE);
-    if (!ft_strncmp(argv[1], "here_doc", 8) && argc >= 5)
-    {
-        read_here_doc(pipex, argv);
-        argv++;
-    }
-    else if (access(argv[1], R_OK) == 0)
-        read_file(pipex, argv);
-    else
-        exit_pipex(EINVAL, "invalid argument => couldn't open read file", TRUE);
+	if (argc < 4)
+		exit_pipex(EINVAL, "not enough arguments", TRUE);
+	if (!protected_strncmp(argv[1], "here_doc", 9) && argc >= 5)
+	{
+		read_here_doc(pipex, argv);
+		argv++;
+	}
+	else if (access(argv[1], R_OK) == 0)
+		read_file(pipex, argv);
+	else
+		exit_pipex(EINVAL, "invalid argument => couldn't open read file", TRUE);
 	pipex->envp = envp;
-        
+	pipex->cmds = split_command_params(pipex, argc, argv);
+	while ((pipex->cmds)[pipex->cmds_count])
+		pipex->cmds_count++;
+	if (pipex->with_heredoc)
+		pipex->out_file = open(argv[argc - 2],
+				O_APPEND | O_CREAT | O_WRONLY | O_SYMLINK, 0644);
+	else
+		pipex->out_file = open(argv[argc - 1],
+				O_TRUNC | O_CREAT | O_WRONLY | O_SYMLINK, 0644);
+	if (pipex->out_file == -1)
+		exit_pipex(EAGAIN, "could't open the write file", TRUE);
 }

@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   bonus_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/20 18:52:44 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/02/23 12:26:29 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/03/01 19:37:00 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/03/01 19:49:40 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/ft_garbage_collector.h"
+#include "pipex.h"
 
-
-
-int	main(void)
+int	main(int argc, char *argv[], char *envp[])
 {
-	int fd = open("./test.txt",O_RDONLY) ;
+	t_pipex	pipex;
 
-
-	char *p;
-	while ((p = get_next_line(fd)))
-		ft_printf("%s",p);
+	ft_bzero(&pipex, sizeof(t_pipex));
+	pipex_bonus_parser(&pipex, argc, argv, envp);
+	main_process(&pipex);
+	exit_pipex(0, NULL, FALSE);
 }
