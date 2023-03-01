@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 21:05:33 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 19:47:45 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/01 21:55:37 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,26 @@
 static void	read_here_doc(t_pipex *pipex, char *argv[])
 {
 	char	*res;
+	char	*limiter;
 	size_t	limiter_len;
+	
 
-	if (access(HEREDOC_PATH, F_OK) == 0)
-		if (unlink(HEREDOC_PATH) == -1)
-			exit_pipex(EAGAIN, "couldn't unlink heredoc file", TRUE);
-	pipex->in_file = open(HEREDOC_PATH, O_CREAT | O_WRONLY, 0666);
+	pipex->in_file = open(HEREDOC_PATH, O_TRUNC | O_CREAT | O_WRONLY, 0666);
 	if (pipex->in_file == -1)
 		exit_pipex(EAGAIN, "couldn't create heredoc", TRUE);
+	ft_putstr_fd("here_doc>", STDOUT_FILENO);
 	res = get_next_line(STDIN_FILENO);
+	limiter = ft_strjoin_protected(argv[2], "\n");
+	if (!limiter)
+		exit_pipex(ENOMEM, "couldn't malloc limiter", TRUE);
 	limiter_len = ft_strlen(argv[2]);
-	while ((!limiter_len && res && res[0] != '\n') || (limiter_len
-			&& protected_strncmp(res, argv[2], limiter_len)))
+	while (protected_strncmp(res, limiter, limiter_len)!= 0)
 	{
 		ft_putstr_fd(res, pipex->in_file);
+		ft_putstr_fd("here_doc>", STDOUT_FILENO);
 		res = get_next_line(STDIN_FILENO);
 	}
+	ft_free_node(2, limiter);
 	close(pipex->in_file);
 	pipex->in_file = open(HEREDOC_PATH, O_RDONLY);
 	if (pipex->in_file == -1)
@@ -64,10 +68,10 @@ void	pipex_bonus_parser(t_pipex *pipex, int argc, char *argv[], char *envp[])
 		pipex->cmds_count++;
 	if (pipex->with_heredoc)
 		pipex->out_file = open(argv[argc - 2],
-				O_APPEND | O_CREAT | O_WRONLY | O_SYMLINK, 0644);
+				O_APPEND | O_CREAT | O_WRONLY | O_SYMLINK, 0666);
 	else
 		pipex->out_file = open(argv[argc - 1],
-				O_TRUNC | O_CREAT | O_WRONLY | O_SYMLINK, 0644);
+				O_TRUNC | O_CREAT | O_WRONLY | O_SYMLINK, 0666);
 	if (pipex->out_file == -1)
 		exit_pipex(EAGAIN, "could't open the write file", TRUE);
 }

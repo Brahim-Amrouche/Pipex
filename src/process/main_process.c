@@ -57,7 +57,6 @@ static void	execute_cmd(t_pipex *pipex, size_t cmd)
 		close_pipe(pipex->com_pipe);
 		if (cmd == pipex->cmds_count)
 			close_pipe(pipex->pass_pipe);
-		waitpid(childprocess, NULL, 0);
 	}
 }
 
