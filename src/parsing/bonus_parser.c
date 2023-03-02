@@ -6,35 +6,38 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 21:05:33 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 21:55:37 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/02 13:02:21 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+static void	limiter_initializer(t_pipex *pipex, char *argv[])
+{
+	pipex->hd_limiter = ft_strjoin_protected(argv[2], "\n");
+	if (!pipex->hd_limiter)
+		exit_pipex(ENOMEM, "couldn't malloc limiter", TRUE);
+	pipex->hd_limiter_len = ft_strlen(pipex->hd_limiter);
+}
+
 static void	read_here_doc(t_pipex *pipex, char *argv[])
 {
 	char	*res;
-	char	*limiter;
-	size_t	limiter_len;
-	
 
 	pipex->in_file = open(HEREDOC_PATH, O_TRUNC | O_CREAT | O_WRONLY, 0666);
 	if (pipex->in_file == -1)
 		exit_pipex(EAGAIN, "couldn't create heredoc", TRUE);
-	ft_putstr_fd("here_doc>", STDOUT_FILENO);
+	protected_putstr_fd(STDOUT_FILENO, "here_doc>");
 	res = get_next_line(STDIN_FILENO);
-	limiter = ft_strjoin_protected(argv[2], "\n");
-	if (!limiter)
-		exit_pipex(ENOMEM, "couldn't malloc limiter", TRUE);
-	limiter_len = ft_strlen(argv[2]);
-	while (protected_strncmp(res, limiter, limiter_len)!= 0)
+	limiter_initializer(pipex, argv);
+	while (protected_strncmp(res, pipex->hd_limiter, pipex->hd_limiter_len))
 	{
-		ft_putstr_fd(res, pipex->in_file);
-		ft_putstr_fd("here_doc>", STDOUT_FILENO);
+		protected_putstr_fd(pipex->in_file, res);
+		protected_putstr_fd(STDOUT_FILENO, "here_doc>");
+		ft_free_node(1, res);
 		res = get_next_line(STDIN_FILENO);
 	}
-	ft_free_node(2, limiter);
+	ft_free_node(2, pipex->hd_limiter);
 	close(pipex->in_file);
 	pipex->in_file = open(HEREDOC_PATH, O_RDONLY);
 	if (pipex->in_file == -1)

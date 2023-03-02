@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:30:05 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 19:56:18 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/02 13:41:10 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,12 @@ typedef struct s_pipex
 	size_t		cmds_count;
 	char		***cmds;
 	char		**envp;
+	char		*trimed_infile;
 	int			in_file;
 	int			out_file;
 	t_boolean	with_heredoc;
+	char		*hd_limiter;
+	size_t		hd_limiter_len;
 }				t_pipex;
 
 // Parsing
@@ -59,6 +62,8 @@ int				protected_strncmp(char *s1, char *s2, size_t n);
 void			protected_putstr_fd(int fd, char *str);
 // close_fd.c
 void			close_fd(int fd);
+// substr.c
+char			*protected_substr(char const *s, unsigned int start, size_t len);
 
 //exit_pipex.c
 void			exit_pipex(int err_n, char *message, t_boolean is_error);

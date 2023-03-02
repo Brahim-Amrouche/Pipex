@@ -1,31 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   strncmp.c                                          :+:      :+:    :+:   */
+/*   substr.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/01 18:33:53 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 12:33:00 by bamrouch         ###   ########.fr       */
+/*   Created: 2023/03/02 13:18:12 by bamrouch          #+#    #+#             */
+/*   Updated: 2023/03/02 13:32:51 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	protected_strncmp(char *s1, char *s2, size_t n)
+char	*protected_substr(char const *s, unsigned int start, size_t len)
 {
+	size_t	s_len;
 	size_t	i;
+	char	*res;
 
-	if (!s1 && !s2)
-		return (0);
-	if ((!s1 && s2) || (s1 && !s2))
-		return (-1);
+	if (!s)
+		return (NULL);
+	s_len = ft_strlen(s);
+	if (start >= s_len)
+		len = 0;
+	if (len >= s_len - start)
+		len = s_len - start;
+	res = (char *)ft_malloc((len + 1) * sizeof(char),
+			(t_mem_manage_params){NULL, 2, NULL, 0});
+	if (!res)
+		return (NULL);
 	i = 0;
-	while ((*(s1 + i) || *(s2 + i)) && i < n)
+	while (i < len && start + i < s_len)
 	{
-		if (((unsigned char)*(s1 + i)) != ((unsigned char)*(s2 + i)))
-			return (((unsigned char)*(s1 + i)) - ((unsigned char)*(s2 + i)));
+		res[i] = s[start + i];
 		i++;
 	}
-	return (0);
+	res[i] = 0;
+	return (res);
 }

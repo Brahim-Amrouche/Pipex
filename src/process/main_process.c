@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <signal.h>
 
 static void	close_pipe(int *fd)
 {
@@ -79,6 +78,11 @@ void	main_process(t_pipex *pipex)
 		}
 		i++;
 	}
+	while (wait(NULL) != -1)
+	{
+
+	};
+	waitpid(0, NULL, 0);
 	close_fd(pipex->in_file);
 	close_fd(pipex->out_file);
 }

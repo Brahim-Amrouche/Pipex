@@ -6,13 +6,13 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 19:51:39 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/02 13:56:12 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-t_boolean	cmd_is_exect(char **cmd, char **paths)
+static t_boolean	cmd_is_exect(char **cmd, char **paths)
 {
 	char	*joined_path;
 
@@ -80,6 +80,20 @@ static char	**parse_path(char *envp[])
 	return (paths);
 }
 
+static void	fix_memory(char **paths)
+{
+	size_t	i;
+
+	i = 0;
+	while (*(paths + i))
+	{
+		ft_free_node(2, *(paths + i));
+		i++;
+	}
+	ft_free_node(2, paths);
+	mem_scope_merge(2, 1);
+}
+
 char	***split_command_params(t_pipex *pipex, int argc, char *argv[])
 {
 	ssize_t	i;
@@ -89,7 +103,7 @@ char	***split_command_params(t_pipex *pipex, int argc, char *argv[])
 	i = -1;
 	argv++;
 	pipe_args = ft_malloc((argc - (2 + pipex->with_heredoc)) * sizeof(char **),
-			(t_mem_manage_params){NULL, 1, NULL, 0});
+							(t_mem_manage_params){NULL, 1, NULL, 0});
 	if (!pipe_args)
 		exit_pipex(ENOMEM, "couldn't split args", TRUE);
 	paths = parse_path(pipex->envp);
@@ -104,6 +118,6 @@ char	***split_command_params(t_pipex *pipex, int argc, char *argv[])
 			exit_pipex(EINVAL, "invalid commands", TRUE);
 	}
 	*(pipe_args + i) = NULL;
-	mem_scope_merge(2, 1);
+	fix_memory(paths);
 	return (pipe_args);
 }
