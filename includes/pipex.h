@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:30:05 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 13:41:10 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:46:54 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ void			protected_putstr_fd(int fd, char *str);
 // close_fd.c
 void			close_fd(int fd);
 // substr.c
-char			*protected_substr(char const *s, unsigned int start, size_t len);
+char			*protected_substr(char const *s, unsigned int start,
+					size_t len);
 
 //exit_pipex.c
 void			exit_pipex(int err_n, char *message, t_boolean is_error);

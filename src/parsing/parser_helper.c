@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 13:56:12 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/02 15:44:05 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ char	***split_command_params(t_pipex *pipex, int argc, char *argv[])
 	i = -1;
 	argv++;
 	pipe_args = ft_malloc((argc - (2 + pipex->with_heredoc)) * sizeof(char **),
-							(t_mem_manage_params){NULL, 1, NULL, 0});
+			(t_mem_manage_params){NULL, 1, NULL, 0});
 	if (!pipe_args)
 		exit_pipex(ENOMEM, "couldn't split args", TRUE);
 	paths = parse_path(pipex->envp);

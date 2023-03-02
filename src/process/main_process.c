@@ -53,15 +53,21 @@ static void	execute_cmd(t_pipex *pipex, size_t cmd)
 		child_process(pipex, cmd);
 	else
 	{
+		if (cmd == 0)
+			close_fd(pipex->in_file);
 		close_pipe(pipex->com_pipe);
-		if (cmd == pipex->cmds_count)
+		if (cmd == pipex->cmds_count - 1)
+		{
+			close_fd(pipex->out_file);
 			close_pipe(pipex->pass_pipe);
+		}
 	}
 }
 
 void	main_process(t_pipex *pipex)
 {
 	size_t	i;
+	int		exit_status;
 
 	if (pipe(pipex->com_pipe) || pipe(pipex->pass_pipe))
 		exit_pipex(EPIPE, "couldn't pipe", TRUE);
@@ -78,11 +84,8 @@ void	main_process(t_pipex *pipex)
 		}
 		i++;
 	}
-	while (wait(NULL) != -1)
-	{
-
-	};
-	waitpid(0, NULL, 0);
-	close_fd(pipex->in_file);
-	close_fd(pipex->out_file);
+	while (wait(&exit_status) != -1)
+		;
+	if (exit_status)
+		exit_pipex(-1, NULL, TRUE);
 }
