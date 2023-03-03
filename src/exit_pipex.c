@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 11:36:50 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 18:12:12 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/03 23:17:20 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ void	exit_pipex(int err_n, char *message, t_boolean is_error)
 	if (is_error)
 	{
 		if (err_n >= 0)
-			ft_putstr_fd(strerror(err_n), STDERR_FILENO);
+			protected_putstr_fd(STDERR_FILENO, strerror(err_n));
 		if (message)
 		{
-			ft_putstr_fd(":\t", STDERR_FILENO);
-			ft_putendl_fd(message, STDERR_FILENO);
+			protected_putstr_fd(STDERR_FILENO, ":\t");
+			protected_putstr_fd(STDERR_FILENO, message);
+			protected_putstr_fd(STDERR_FILENO, "\n");
 		}
 		exit(EXIT_FAILURE);
 	}

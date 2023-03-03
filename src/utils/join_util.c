@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/26 16:33:51 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/01 19:52:51 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/03 23:16:11 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,12 @@ char	*ft_strjoin_protected(char *s1, char *s2)
 	size_t	s1_len;
 	char	*res;
 
-	if (!s1 || !s2)
+	if (!s1 && !s2)
 		return (NULL);
+	if (!s1 && s2)
+		return (ft_strdup_protected(s2));
+	if (s1 && !s2)
+		return (ft_strdup_protected(s1));
 	s1_len = ft_strlen(s1) + 1;
 	total_len = s1_len + ft_strlen(s2);
 	res = (char *)ft_malloc(total_len * sizeof(char),

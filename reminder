@@ -1,0 +1,3 @@
+To do:
+pipex should never stop no matter the files , only exits on failed malloc or processes dont work
+test here_doc

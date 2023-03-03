@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 12:30:05 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 15:46:54 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/03 22:47:28 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_pipex
 // separator_functions
 t_boolean		path_sep(char c);
 t_boolean		cmd_sep(char c);
+t_boolean		str_is_a_path(char *str);
 // parser_helper.c
 char			***split_command_params(t_pipex *pipex, int argc, char *argv[]);
 //parser.c
@@ -59,7 +60,8 @@ char			**ft_split_multi_sep(char *s, t_boolean (*sep_checker)(char));
 // strncmp.c
 int				protected_strncmp(char *s1, char *s2, size_t n);
 // putstr.c
-void			protected_putstr_fd(int fd, char *str);
+t_boolean		protected_putstr_fd(int fd, char *str);
+t_boolean		protected_putendl_fd(char *s, int fd);
 // close_fd.c
 void			close_fd(int fd);
 // substr.c

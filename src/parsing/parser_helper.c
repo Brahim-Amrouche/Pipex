@@ -6,19 +6,21 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 15:44:05 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/03 22:55:08 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static t_boolean	cmd_is_exect(char **cmd, char **paths)
+static void	cmd_is_exect(char **cmd, char **paths)
 {
-	char	*joined_path;
+	char		*joined_path;
+	t_boolean	is_a_path;
 
 	if (!access(*cmd, X_OK))
-		return (TRUE);
-	while (*paths)
+		return ;
+	is_a_path = str_is_a_path(*cmd);
+	while (!is_a_path && *paths)
 	{
 		joined_path = ft_strjoin_protected(*paths, *cmd);
 		if (!joined_path)
@@ -27,12 +29,11 @@ static t_boolean	cmd_is_exect(char **cmd, char **paths)
 		{
 			ft_free_node(2, *cmd);
 			*cmd = joined_path;
-			return (TRUE);
+			return ;
 		}
 		ft_free_node(2, joined_path);
 		paths++;
 	}
-	return (FALSE);
 }
 
 static void	add_ending_slash(char *paths[])
@@ -112,10 +113,7 @@ char	***split_command_params(t_pipex *pipex, int argc, char *argv[])
 		*(pipe_args + i) = ft_split_multi_sep(*argv, cmd_sep);
 		if (!(*pipe_args + i))
 			exit_pipex(ENOMEM, "couldn't malloc arguments split", TRUE);
-		if (cmd_is_exect(*(pipe_args + i), paths))
-			continue ;
-		else
-			exit_pipex(EINVAL, "invalid commands", TRUE);
+		cmd_is_exect(*(pipe_args + i), paths);
 	}
 	*(pipe_args + i) = NULL;
 	fix_memory(paths);
