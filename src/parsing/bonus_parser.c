@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 21:05:33 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/04 16:22:38 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/04 18:18:30 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,6 @@ void	pipex_bonus_parser(t_pipex *pipex, int argc, char *argv[], char *envp[])
 	else
 		pipex->out_file = open(argv[argc - 1],
 				O_TRUNC | O_CREAT | O_WRONLY | O_SYMLINK, 0666);
+	if (pipex->out_file == -1)
+		protected_putendl_fd("couldn't create output file", STDERR_FILENO);
 }

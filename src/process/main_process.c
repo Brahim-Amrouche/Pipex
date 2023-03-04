@@ -38,8 +38,13 @@ static void	child_process(t_pipex *pipex, size_t cmd)
 	else
 		dup2(pipex->pass_pipe[1], STDOUT_FILENO);
 	close_fd(pipex->pass_pipe[1]);
-	if (execve((pipex->cmds)[cmd][0], (pipex->cmds)[cmd], pipex->envp) == -1)
-		exit_pipex(EAGAIN, "couldn't execve childprocess", TRUE);
+	if ((cmd == 0 && pipex->in_file >= 0)
+		|| (cmd == pipex->cmds_count - 1 && pipex->out_file >= 0)
+		|| (cmd < pipex->cmds_count - 1 && cmd > 0))
+		if (execve((pipex->cmds)[cmd][0],
+			(pipex->cmds)[cmd], pipex->envp) == -1)
+			exit_pipex(EAGAIN, "couldn't execve childprocess", TRUE);
+	exit_pipex(-1, NULL, FALSE);
 }
 
 static void	execute_cmd(t_pipex *pipex, size_t cmd)
