@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 21:05:33 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/02 13:02:21 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/04 16:22:38 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	read_here_doc(t_pipex *pipex, char *argv[])
 		res = get_next_line(STDIN_FILENO);
 	}
 	ft_free_node(2, pipex->hd_limiter);
-	close(pipex->in_file);
+	close_fd(pipex->in_file);
 	pipex->in_file = open(HEREDOC_PATH, O_RDONLY);
 	if (pipex->in_file == -1)
 		exit_pipex(EAGAIN, "couldn't open heredoc for read", TRUE);
@@ -64,7 +64,7 @@ void	pipex_bonus_parser(t_pipex *pipex, int argc, char *argv[], char *envp[])
 	else if (access(argv[1], R_OK) == 0)
 		read_file(pipex, argv);
 	else
-		exit_pipex(EINVAL, "invalid argument => couldn't open read file", TRUE);
+		protected_putendl_fd("no such read file", STDERR_FILENO);
 	pipex->envp = envp;
 	pipex->cmds = split_command_params(pipex, argc, argv);
 	while ((pipex->cmds)[pipex->cmds_count])
@@ -75,6 +75,4 @@ void	pipex_bonus_parser(t_pipex *pipex, int argc, char *argv[], char *envp[])
 	else
 		pipex->out_file = open(argv[argc - 1],
 				O_TRUNC | O_CREAT | O_WRONLY | O_SYMLINK, 0666);
-	if (pipex->out_file == -1)
-		exit_pipex(EAGAIN, "could't open the write file", TRUE);
 }

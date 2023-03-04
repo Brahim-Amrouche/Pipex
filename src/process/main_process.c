@@ -22,7 +22,7 @@ static void	child_process(t_pipex *pipex, size_t cmd)
 {
 	close_fd(pipex->com_pipe[1]);
 	close_fd(pipex->pass_pipe[0]);
-	if (cmd == 0)
+	if (pipex->in_file >= 0 && cmd == 0)
 	{
 		dup2(pipex->in_file, STDIN_FILENO);
 		close_fd(pipex->in_file);
@@ -30,7 +30,7 @@ static void	child_process(t_pipex *pipex, size_t cmd)
 	else
 		dup2(pipex->com_pipe[0], STDIN_FILENO);
 	close_fd(pipex->com_pipe[0]);
-	if (cmd == pipex->cmds_count - 1)
+	if (pipex->out_file >= 0 && cmd == pipex->cmds_count - 1)
 	{
 		dup2(pipex->out_file, STDOUT_FILENO);
 		close_fd(pipex->out_file);
@@ -53,7 +53,7 @@ static void	execute_cmd(t_pipex *pipex, size_t cmd)
 		child_process(pipex, cmd);
 	else
 	{
-		if (cmd == 0)
+		if (pipex->in_file >= 0 && cmd == 0)
 			close_fd(pipex->in_file);
 		close_pipe(pipex->com_pipe);
 		if (cmd == pipex->cmds_count - 1)
@@ -85,7 +85,8 @@ void	main_process(t_pipex *pipex)
 		i++;
 	}
 	while (wait(&exit_status) != -1)
-		;
-	if (exit_status)
-		exit_pipex(-1, NULL, TRUE);
+	{
+		if (exit_status)
+			exit_pipex(-1, NULL, TRUE);
+	}
 }

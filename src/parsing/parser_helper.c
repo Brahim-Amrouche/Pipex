@@ -6,7 +6,7 @@
 /*   By: bamrouch <bamrouch@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 17:42:49 by bamrouch          #+#    #+#             */
-/*   Updated: 2023/03/03 22:55:08 by bamrouch         ###   ########.fr       */
+/*   Updated: 2023/03/04 16:24:45 by bamrouch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	cmd_is_exect(char **cmd, char **paths)
 	{
 		joined_path = ft_strjoin_protected(*paths, *cmd);
 		if (!joined_path)
-			exit_pipex(ENOMEM, "could't find binary paths", TRUE);
+			exit_pipex(ENOMEM, "could't join binary to paths", TRUE);
 		if (!access(joined_path, X_OK))
 		{
 			ft_free_node(2, *cmd);
