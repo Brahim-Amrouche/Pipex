@@ -12,39 +12,54 @@
 
 #include "pipex.h"
 
-static void	close_pipe(int *fd)
+static void	open_file(t_pipex *pipex, t_boolean for_read)
 {
-	close_fd(fd[0]);
-	close_fd(fd[1]);
+	if (for_read)
+	{
+		if (pipex->with_heredoc)
+			pipex->in_file_fd = open(HEREDOC_PATH, O_RDONLY);
+		else
+			pipex->in_file_fd = open(pipex->in_file, O_RDONLY);
+		dup2(pipex->in_file_fd, STDIN_FILENO);
+		close_fd(pipex->in_file_fd);
+		if (pipex->in_file_fd < 0)
+			pipex->read_error = TRUE;
+		return ;
+	}
+	if (pipex->with_heredoc)
+		pipex->out_file_fd = open(pipex->out_file,
+				O_APPEND | O_CREAT | O_WRONLY | O_SYMLINK, 0666);
+	else
+		pipex->out_file_fd = open(pipex->out_file,
+				O_TRUNC | O_CREAT | O_WRONLY | O_SYMLINK, 0666);
+	dup2(pipex->out_file_fd, STDOUT_FILENO);
+	close_fd(pipex->out_file_fd);
+	if (pipex->out_file_fd < 0)
+		pipex->write_error = TRUE;
 }
 
 static void	child_process(t_pipex *pipex, size_t cmd)
 {
 	close_fd(pipex->com_pipe[1]);
 	close_fd(pipex->pass_pipe[0]);
-	if (pipex->in_file >= 0 && cmd == 0)
-	{
-		dup2(pipex->in_file, STDIN_FILENO);
-		close_fd(pipex->in_file);
-	}
+	if (cmd == 0)
+		open_file(pipex, TRUE);
 	else
 		dup2(pipex->com_pipe[0], STDIN_FILENO);
 	close_fd(pipex->com_pipe[0]);
-	if (pipex->out_file >= 0 && cmd == pipex->cmds_count - 1)
-	{
-		dup2(pipex->out_file, STDOUT_FILENO);
-		close_fd(pipex->out_file);
-	}
+	if (cmd == pipex->cmds_count - 1)
+		open_file(pipex, FALSE);
 	else
 		dup2(pipex->pass_pipe[1], STDOUT_FILENO);
 	close_fd(pipex->pass_pipe[1]);
-	if ((cmd == 0 && pipex->in_file >= 0)
-		|| (cmd == pipex->cmds_count - 1 && pipex->out_file >= 0)
-		|| (cmd < pipex->cmds_count - 1 && cmd > 0))
-		if (execve((pipex->cmds)[cmd][0],
-			(pipex->cmds)[cmd], pipex->envp) == -1)
-			exit_pipex(EAGAIN, "couldn't execve childprocess", TRUE);
-	exit_pipex(-1, NULL, FALSE);
+	if (pipex->read_error)
+		protected_putendl_fd("no such read file", STDERR_FILENO);
+	if (pipex->write_error)
+		protected_putendl_fd("cant write to out file", STDERR_FILENO);
+	if (pipex->read_error || pipex->write_error)
+		exit_pipex(-1, NULL, TRUE);
+	if (execve((pipex->cmds)[cmd][0], (pipex->cmds)[cmd], pipex->envp) == -1)
+		exit_pipex(EAGAIN, "couldn't execve childprocess", TRUE);
 }
 
 static void	execute_cmd(t_pipex *pipex, size_t cmd)
@@ -58,21 +73,31 @@ static void	execute_cmd(t_pipex *pipex, size_t cmd)
 		child_process(pipex, cmd);
 	else
 	{
-		if (pipex->in_file >= 0 && cmd == 0)
-			close_fd(pipex->in_file);
 		close_pipe(pipex->com_pipe);
 		if (cmd == pipex->cmds_count - 1)
 		{
-			close_fd(pipex->out_file);
+			pipex->last_process = childprocess;
 			close_pipe(pipex->pass_pipe);
 		}
+	}
+}
+
+static void	wait_child_processes(t_pipex *pipex)
+{
+	pid_t	process_id;
+
+	process_id = 0;
+	while (process_id != -1)
+	{
+		process_id = wait(&pipex->exit_status);
+		if (process_id == pipex->last_process && pipex->exit_status)
+			exit_pipex(-1, NULL, TRUE);
 	}
 }
 
 void	main_process(t_pipex *pipex)
 {
 	size_t	i;
-	int		exit_status;
 
 	if (pipe(pipex->com_pipe) || pipe(pipex->pass_pipe))
 		exit_pipex(EPIPE, "couldn't pipe", TRUE);
@@ -89,9 +114,5 @@ void	main_process(t_pipex *pipex)
 		}
 		i++;
 	}
-	while (wait(&exit_status) != -1)
-	{
-		if (exit_status)
-			exit_pipex(-1, NULL, TRUE);
-	}
+	wait_child_processes(pipex);
 }

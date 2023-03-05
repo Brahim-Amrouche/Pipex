@@ -1,0 +1,23 @@
+1) < Makefile cat | grep a > pipe ==> succes && output
+
+2) < x  cat | ls > output ==> succes && output bcs ls works anyways
+bash: x: No such file or directory
+
+3) < x cat | ls > /out ==> failure && No output bcs no acces right
+bash: x: No such file or directory
+bash: /out: Permission denied
+
+4) < Makefile press | cat > output ==> Succes && empty output
+bash: press: command not found
+
+5)  < Makefile press | redd > output  ===> failure && empty output
+bash: press: command not found
+bash: redd: command not found
+
+6) < /dev/random cat | grep a > out ==> failure && hangs bcs pipe never reaches grep
+
+7) < /dev/random  cat | grep a  | ls > out ==> succes && hang && output reaches the file
+
+8) < /dev/random cat | ls | grep M > out ==>  succes && output post grep
+
+9) < /dev/random cat > out ==> failure && hangs bcs never ending input
